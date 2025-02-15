@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: gisma-acm-server/Dockerfile
+    image: gisma-acm-server
+    ports:
+      - "8080:8080"
