@@ -23,6 +23,7 @@
 
     <modules>
         <module>gisma-acm-server</module>
+        <module>gisma-acm-persistence</module>
     </modules>
 
     <licenses>
@@ -45,5 +46,12 @@
     <properties>
         <java.version>21</java.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

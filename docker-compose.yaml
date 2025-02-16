@@ -1,10 +1,39 @@
 version: '3.8'
 
 services:
+  mysql:
+    image: mysql:9.2.0
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+    ports:
+      - "3306:3306"
+    volumes:
+      - /Users/shayantabatabaee/Projects/University/mysql-docker/data:/var/lib/mysql
+    networks:
+      - app-network
   server:
     build:
       context: .
       dockerfile: gisma-acm-server/Dockerfile
     image: gisma-acm-server
+    environment:
+      # MYSQL Connection Information
+      - MYSQL_URL=mysql://mysql_db:3306/acm_gisma
+      - MYSQL_USERNAME=root
+      - MYSQL_PASSWORD=root
+      # Admin User Data
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=admin
+      - ADMIN_EMAIL=admin@gisma.com
     ports:
       - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
