@@ -1,5 +1,6 @@
-package com.gisma.competition.acm;
+package com.gisma.competition.acm.initializer;
 
+import com.gisma.competition.acm.GismaACMDemoApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 

@@ -1,4 +1,4 @@
-package com.gisma.competition.acm.persistence;
+package com.gisma.competition.acm.initializer;
 
 import com.gisma.competition.acm.persistence.entity.User;
 import com.gisma.competition.acm.persistence.enumeration.UserRole;
