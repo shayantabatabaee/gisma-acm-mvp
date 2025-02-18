@@ -1,10 +1,17 @@
 package com.gisma.competition.acm.persistence.entity;
 
-import com.gisma.competition.acm.persistence.enumeration.UserRole;
+import com.gisma.competition.acm.persistence.enumeration.UserRoleModel;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 
 @Entity
@@ -15,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @Data
 @RequiredArgsConstructor
 @NoArgsConstructor(force = true)
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +30,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private final UserRole userRole;
+    private final UserRoleModel userRole;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -36,4 +43,14 @@ public class User {
 
     @Column(nullable = false)
     private final Long registrationDate;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (userRole == UserRoleModel.ADMIN) {
+            return Arrays.asList(new SimpleGrantedAuthority(UserRoleModel.ADMIN.name()),
+                    new SimpleGrantedAuthority(UserRoleModel.STANDARD.name()));
+        } else {
+            return List.of(new SimpleGrantedAuthority(UserRoleModel.STANDARD.name()));
+        }
+    }
 }

@@ -1,7 +1,7 @@
 package com.gisma.competition.acm.initializer;
 
 import com.gisma.competition.acm.persistence.entity.User;
-import com.gisma.competition.acm.persistence.enumeration.UserRole;
+import com.gisma.competition.acm.persistence.enumeration.UserRoleModel;
 import com.gisma.competition.acm.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -29,8 +29,8 @@ public class AdminUserInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        if (userRepository.findByUsername(adminUsername) == null) {
-            User admin = new User(UserRole.ADMIN, System.currentTimeMillis());
+        if (userRepository.findByUsername(adminUsername).isEmpty()) {
+            User admin = new User(UserRoleModel.ADMIN, System.currentTimeMillis());
             admin.setUsername(adminUsername);
             admin.setPassword(passwordEncoder.encode(adminPassword));
             admin.setEmail(adminEmail);

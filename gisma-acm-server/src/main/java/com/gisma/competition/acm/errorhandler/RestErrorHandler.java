@@ -4,6 +4,7 @@ import com.gisma.competition.acm.api.dto.ErrorResponseDto;
 import com.gisma.competition.acm.api.exception.BaseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -35,5 +36,14 @@ public class RestErrorHandler {
         errorResponseDto.setErrorCode(ex.getClass().getSimpleName());
         errorResponseDto.setErrorMessage(ex.getMessage());
         return new ResponseEntity<>(errorResponseDto, ex.getStatus());
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponseDto handleUsernameNotFoundException(BadCredentialsException ex) {
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto();
+        errorResponseDto.setErrorCode(ex.getClass().getSimpleName());
+        errorResponseDto.setErrorMessage("Username or Password is incorrect.");
+        return errorResponseDto;
     }
 }

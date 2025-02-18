@@ -1,5 +1,7 @@
 package com.gisma.competition.acm.api.facade;
 
+import com.gisma.competition.acm.api.dto.LoginRequestDto;
+import com.gisma.competition.acm.api.dto.LoginResponseDto;
 import com.gisma.competition.acm.api.dto.SignupRequestDto;
 import com.gisma.competition.acm.api.exception.UserDuplicateException;
 import jakarta.validation.Valid;
@@ -18,4 +20,10 @@ public interface AuthenticationFacade {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<String> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) throws UserDuplicateException;
+
+    @PostMapping(value = "/login",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto);
 }
