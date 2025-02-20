@@ -47,10 +47,15 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (userRole == UserRoleModel.ADMIN) {
-            return Arrays.asList(new SimpleGrantedAuthority(UserRoleModel.ADMIN.name()),
-                    new SimpleGrantedAuthority(UserRoleModel.STANDARD.name()));
+            return Arrays.asList(
+                    new SimpleGrantedAuthority(decorateRole(UserRoleModel.ADMIN)),
+                    new SimpleGrantedAuthority(decorateRole(UserRoleModel.STANDARD)));
         } else {
-            return List.of(new SimpleGrantedAuthority(UserRoleModel.STANDARD.name()));
+            return List.of(new SimpleGrantedAuthority(decorateRole(UserRoleModel.STANDARD)));
         }
+    }
+
+    private String decorateRole(UserRoleModel userRole) {
+        return "ROLE_" + userRole.name();
     }
 }

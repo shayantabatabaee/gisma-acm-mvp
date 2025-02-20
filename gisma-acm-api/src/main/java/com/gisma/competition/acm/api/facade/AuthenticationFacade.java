@@ -3,7 +3,9 @@ package com.gisma.competition.acm.api.facade;
 import com.gisma.competition.acm.api.dto.LoginRequestDto;
 import com.gisma.competition.acm.api.dto.LoginResponseDto;
 import com.gisma.competition.acm.api.dto.SignupRequestDto;
+import com.gisma.competition.acm.api.exception.BadCredentialException;
 import com.gisma.competition.acm.api.exception.UserDuplicateException;
+import com.gisma.competition.acm.api.exception.ValidationException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,11 +21,13 @@ public interface AuthenticationFacade {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<String> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) throws UserDuplicateException;
+    ResponseEntity<String> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) throws ValidationException,
+            UserDuplicateException;
 
     @PostMapping(value = "/login",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto);
+    ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto) throws ValidationException,
+            BadCredentialException;
 }

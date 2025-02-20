@@ -3,6 +3,7 @@ package com.gisma.competition.acm.controller;
 import com.gisma.competition.acm.api.dto.LoginRequestDto;
 import com.gisma.competition.acm.api.dto.LoginResponseDto;
 import com.gisma.competition.acm.api.dto.SignupRequestDto;
+import com.gisma.competition.acm.api.exception.BadCredentialException;
 import com.gisma.competition.acm.api.exception.UserDuplicateException;
 import com.gisma.competition.acm.api.facade.AuthenticationFacade;
 import com.gisma.competition.acm.persistence.assembler.UserAssembler;
@@ -13,6 +14,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,17 +39,21 @@ public class AuthenticationController implements AuthenticationFacade {
     }
 
     @Override
-    public ResponseEntity<LoginResponseDto> login(LoginRequestDto loginRequestDto) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequestDto.getUsername(),
-                        loginRequestDto.getPassword())
-        );
-        User user = (User) authentication.getPrincipal();
-        LoginResponseDto loginResponseDto = userAssembler.toLoginResponseDto(user);
-        String jwtToken = jwtUtil.generateToken(user);
-        HttpHeaders headers = createAuthorizationHeader(jwtToken);
-        return ResponseEntity.ok().headers(headers).body(loginResponseDto);
+    public ResponseEntity<LoginResponseDto> login(LoginRequestDto loginRequestDto) throws BadCredentialException {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequestDto.getUsername(),
+                            loginRequestDto.getPassword())
+            );
+            User user = (User) authentication.getPrincipal();
+            LoginResponseDto loginResponseDto = userAssembler.toLoginResponseDto(user);
+            String jwtToken = jwtUtil.generateToken(user);
+            HttpHeaders headers = createAuthorizationHeader(jwtToken);
+            return ResponseEntity.ok().headers(headers).body(loginResponseDto);
+        } catch (BadCredentialsException e) {
+            throw new BadCredentialException(e);
+        }
     }
 
     private HttpHeaders createAuthorizationHeader(String jwtToken) {

@@ -1,9 +1,7 @@
 package com.gisma.competition.acm.util;
 
-import com.gisma.competition.acm.api.exception.JwtTokenExpiredException;
 import com.gisma.competition.acm.persistence.entity.User;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,25 +31,21 @@ public class JwtUtil {
 
     }
 
-    public String extractUsername(String token) throws JwtTokenExpiredException {
+    public String extractUsername(String token) {
         return getClaimsFromToken(token).getSubject();
     }
 
-    public boolean validateToken(String token, UserDetails user) throws JwtTokenExpiredException {
+    public boolean validateToken(String token, UserDetails user) {
         String username = extractUsername(token);
         return user.getUsername().equals(username);
     }
 
-    private Claims getClaimsFromToken(String token) throws JwtTokenExpiredException {
-        try {
-            return Jwts.parser().
-                    verifyWith(getSecretKey()).
-                    build().
-                    parseSignedClaims(token).
-                    getPayload();
-        } catch (ExpiredJwtException e) {
-            throw new JwtTokenExpiredException();
-        }
+    private Claims getClaimsFromToken(String token) {
+        return Jwts.parser().
+                verifyWith(getSecretKey()).
+                build().
+                parseSignedClaims(token).
+                getPayload();
     }
 
     private SecretKey getSecretKey() {
