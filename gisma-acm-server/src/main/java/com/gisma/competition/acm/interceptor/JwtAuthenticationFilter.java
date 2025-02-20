@@ -57,7 +57,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
             }
-            filterChain.doFilter(request, response);
         } catch (Exception e) {
             Exception exception = e;
             if (exception instanceof ExpiredJwtException) {
@@ -66,7 +65,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 exception = new JwtTokenException(exception.getMessage(), exception);
             }
             handlerExceptionResolver.resolveException(request, response, null, exception);
+            return;
         }
+        filterChain.doFilter(request, response);
     }
 
     private String extractToken(HttpServletRequest request) {

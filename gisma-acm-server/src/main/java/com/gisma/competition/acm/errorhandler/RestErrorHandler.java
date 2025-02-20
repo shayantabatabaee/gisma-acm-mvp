@@ -7,6 +7,7 @@ import com.gisma.competition.acm.api.exception.UserNotAuthorizedException;
 import com.gisma.competition.acm.api.exception.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -30,6 +32,17 @@ public class RestErrorHandler {
                 collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
         errorResponseDto.setErrorDetails(errorDetails);
         return errorResponseDto;
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponseDto> handleBaseRuntimeException(HttpMessageNotReadableException ex) {
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto();
+        errorResponseDto.setErrorCode(ValidationException.class.getSimpleName());
+        errorResponseDto.setErrorMessage(ValidationException.MESSAGE);
+        Map<String, String> errorDetails = new HashMap<>();
+        errorDetails.put("JsonParseError", ex.getMessage());
+        errorResponseDto.setErrorDetails(errorDetails);
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(AuthorizationDeniedException.class)
