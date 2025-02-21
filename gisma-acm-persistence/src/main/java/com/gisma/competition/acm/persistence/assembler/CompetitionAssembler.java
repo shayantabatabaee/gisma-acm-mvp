@@ -1,13 +1,12 @@
 package com.gisma.competition.acm.persistence.assembler;
 
-import com.gisma.competition.acm.api.dto.CreateCompetitionRequestDto;
-import com.gisma.competition.acm.api.dto.CreateCompetitionResponseDto;
-import com.gisma.competition.acm.api.dto.TemplateDto;
-import com.gisma.competition.acm.api.dto.TestCaseDto;
+import com.gisma.competition.acm.api.dto.*;
 import com.gisma.competition.acm.persistence.entity.Competition;
 import com.gisma.competition.acm.persistence.entity.Template;
 import com.gisma.competition.acm.persistence.entity.TestCase;
+import com.gisma.competition.acm.persistence.enumeration.ArgumentTypeModel;
 import com.gisma.competition.acm.persistence.enumeration.CompetitionLevelModel;
+import com.gisma.competition.acm.persistence.enumeration.DataTypeModel;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -36,18 +35,36 @@ public class CompetitionAssembler {
 
     public Template toTemplateModel(TemplateDto templateDto) {
         Template template = new Template();
-        template.setCodeTemplate(templateDto.getCodeTemplate());
-        template.setMethodSignature(templateDto.getMethodSignature());
+        template.setClassName(templateDto.getClassName());
+        template.setMethodName(templateDto.getMethodName());
         return template;
     }
 
     public List<TestCase> toTestCasesModel(List<TestCaseDto> testCaseDtos) {
         List<TestCase> testCases = new ArrayList<>();
+        int j = 0;
         for (TestCaseDto testCaseDto : testCaseDtos) {
+            int i = 0;
+            for (InputDto inputDto : testCaseDto.getInputs()) {
+                TestCase testCase = new TestCase();
+                testCase.setArgumentId(i);
+                testCase.setArray(inputDto.getIsArray());
+                testCase.setDataType(DataTypeModel.valueOf(inputDto.getType()));
+                testCase.setValue(inputDto.getValue());
+                testCase.setArgumentType(ArgumentTypeModel.INPUT);
+                testCase.setTestCaseId(j);
+                testCases.add(testCase);
+                i++;
+            }
             TestCase testCase = new TestCase();
-            testCase.setInput(testCaseDto.getInput());
-            testCase.setExpectedOutput(testCaseDto.getExpectedOutput());
+            testCase.setArgumentId(i);
+            testCase.setArray(testCaseDto.getExpectedOutput().getIsArray());
+            testCase.setDataType(DataTypeModel.valueOf(testCaseDto.getExpectedOutput().getType()));
+            testCase.setValue(testCaseDto.getExpectedOutput().getValue());
+            testCase.setArgumentType(ArgumentTypeModel.OUTPUT);
+            testCase.setTestCaseId(j);
             testCases.add(testCase);
+            j++;
         }
         return testCases;
     }

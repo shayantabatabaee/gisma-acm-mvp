@@ -1,6 +1,7 @@
 package com.gisma.competition.acm.api.dto;
 
 import com.gisma.competition.acm.api.dto.enumeration.CompetitionLevel;
+import com.gisma.competition.acm.api.validator.TestCaseValidation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
@@ -38,6 +39,7 @@ public class CreateCompetitionRequestDto {
     @NotNull(message = "Test cases must not be null.")
     @Size(min = 1, message = "At least one test case must be provided.")
     @Valid
+    @TestCaseValidation
     private List<TestCaseDto> testCases;
 
     public CompetitionLevel getLevel() {

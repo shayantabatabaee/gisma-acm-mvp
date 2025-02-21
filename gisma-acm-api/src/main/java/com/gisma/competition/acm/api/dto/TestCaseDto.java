@@ -1,14 +1,21 @@
 package com.gisma.competition.acm.api.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import com.gisma.competition.acm.api.validator.ArgumentValidation;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class TestCaseDto {
 
-    @NotBlank(message = "Input of test case cannot be empty.")
-    private String input;
+    @Valid
+    @ArgumentValidation
+    @Size(min = 1, message = "At least one input must be provided or be null.")
+    private List<InputDto> inputs;
 
-    @NotBlank(message = "Expected output of test case cannot be empty.")
-    private String expectedOutput;
+    @Valid
+    @ArgumentValidation
+    private OutputDto expectedOutput;
 }

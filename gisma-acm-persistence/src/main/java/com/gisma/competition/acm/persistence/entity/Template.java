@@ -17,8 +17,8 @@ public class Template {
 
     @Lob
     @Column(nullable = false)
-    private String codeTemplate;
+    private String className;
 
     @Column(nullable = false)
-    private String methodSignature;
+    private String methodName;
 }

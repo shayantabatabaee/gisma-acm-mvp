@@ -6,9 +6,9 @@ import lombok.Data;
 @Data
 public class TemplateDto {
 
-    @NotBlank(message = "Template of code cannot be empty.")
-    private String codeTemplate;
+    @NotBlank(message = "Name of class cannot be empty.")
+    private String className;
 
-    @NotBlank(message = "Signature of method cannot be empty.")
-    private String methodSignature;
+    @NotBlank(message = "Name of method cannot be empty.")
+    private String methodName;
 }

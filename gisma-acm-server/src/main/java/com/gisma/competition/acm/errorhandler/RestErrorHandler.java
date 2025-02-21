@@ -42,7 +42,7 @@ public class RestErrorHandler {
         Map<String, String> errorDetails = new HashMap<>();
         errorDetails.put("JsonParseError", ex.getMessage());
         errorResponseDto.setErrorDetails(errorDetails);
-        return new ResponseEntity<>(errorResponseDto, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(errorResponseDto, ValidationException.STATUS);
     }
 
     @ExceptionHandler(AuthorizationDeniedException.class)
