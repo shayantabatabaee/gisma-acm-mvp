@@ -58,6 +58,7 @@ public class RestErrorHandler {
         ErrorResponseDto errorResponseDto = new ErrorResponseDto();
         errorResponseDto.setErrorCode(ex.getClass().getSimpleName());
         errorResponseDto.setErrorMessage(ex.getMessage());
+        errorResponseDto.setErrorDetails(ex.getDetails());
         return new ResponseEntity<>(errorResponseDto, ex.getStatus());
     }
 
@@ -66,6 +67,7 @@ public class RestErrorHandler {
         ErrorResponseDto errorResponseDto = new ErrorResponseDto();
         errorResponseDto.setErrorCode(ex.getClass().getSimpleName());
         errorResponseDto.setErrorMessage(ex.getMessage());
+        errorResponseDto.setErrorDetails(ex.getDetails());
         return new ResponseEntity<>(errorResponseDto, ex.getStatus());
     }
 }
