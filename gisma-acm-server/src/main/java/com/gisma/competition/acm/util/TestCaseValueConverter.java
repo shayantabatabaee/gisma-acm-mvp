@@ -1,5 +1,6 @@
 package com.gisma.competition.acm.util;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gisma.competition.acm.persistence.entity.TestCase;
 
 import java.util.Arrays;
@@ -11,72 +12,89 @@ public class TestCaseValueConverter {
     public static Class<?>[] convertParameterTypes(List<TestCase> testCases) {
         Class<?>[] result = new Class<?>[testCases.size()];
         for (int i = 0; i < testCases.size(); i++) {
-            boolean isArray = testCases.get(i).isArray();
-            result[i] = testCases.get(i).getDataType().getDataTypeClass(isArray);
+            result[i] = getDataTypeClass(testCases.get(i).getJsonValue());
         }
         return result;
     }
 
     public static Object[] convert(List<TestCase> testCases) {
         Object[] result = new Object[testCases.size()];
-
         for (int i = 0; i < testCases.size(); i++) {
-            boolean isArray = testCases.get(i).isArray();
-            result[i] = TestCaseValueConverter.convertValue(testCases.get(i).getValue(), testCases.get(i).getDataType().getDataTypeClass(isArray));
+            result[i] = TestCaseValueConverter.convertValue(testCases.get(i).getJsonValue());
         }
         return result;
     }
 
-    private static Object convertValue(String value, Class<?> aClass) {
-        if (aClass.isArray()) {
-            Stream<Object> stream = Arrays.stream(value.replace("[", "").replace("]", "").split(","))
-                    .map(v -> convertValueBasedOnType(v.trim(), aClass.getComponentType()));
-            Class<?> targetType = aClass.getComponentType();
-            if (targetType == Byte.class || targetType == byte.class) {
-                return stream.toArray(Byte[]::new);
-            } else if (targetType == Short.class || targetType == short.class) {
-                return stream.toArray(Short[]::new);
-            } else if (targetType == Integer.class || targetType == int.class) {
-                return stream.toArray(Integer[]::new);
-            } else if (targetType == Long.class || targetType == long.class) {
-                return stream.toArray(Long[]::new);
-            } else if (targetType == Float.class || targetType == float.class) {
-                return stream.toArray(Float[]::new);
-            } else if (targetType == Double.class || targetType == double.class) {
-                return stream.toArray(Double[]::new);
-            } else if (targetType == Boolean.class || targetType == boolean.class) {
-                return stream.toArray(Boolean[]::new);
-            } else if (targetType == Character.class || targetType == char.class) {
-                return stream.toArray(Character[]::new);
-            } else if (targetType == String.class) {
-                return stream.toArray(String[]::new);
-            } else {
-                throw new IllegalArgumentException("Unsupported target type: " + targetType);
+    private static Object convertValue(JsonNode value) {
+        if (value.isArray()) {
+            JsonNode[] valueArray = new JsonNode[value.size()];
+            int i = 0;
+            for (JsonNode element : value) {
+                valueArray[i] = element;
+                i++;
             }
-        } else return convertValueBasedOnType(value, aClass);
+            Stream<Object> stream = Arrays.stream(valueArray)
+                    .map(TestCaseValueConverter::convertValueBasedOnType);
+
+            JsonNode firstValue = value.get(0);
+
+            if (firstValue.isNumber()) {
+                return switch (firstValue.numberType()) {
+                    case INT -> stream.toArray(Integer[]::new);
+                    case LONG -> stream.toArray(Long[]::new);
+                    case FLOAT -> stream.toArray(Float[]::new);
+                    case DOUBLE -> stream.toArray(Double[]::new);
+                    default -> throw new IllegalArgumentException("Unsupported target type: " + value.numberType());
+                };
+            } else if (value.isTextual()) {
+                return stream.toArray(String[]::new);
+            } else if (value.isBoolean()) {
+                return stream.toArray(Boolean[]::new);
+            } else if (value.isNull()) {
+                return null;
+            } else
+                throw new IllegalArgumentException("Unsupported target type: " + value.numberType());
+        } else return convertValueBasedOnType(value);
     }
 
-    private static Object convertValueBasedOnType(String value, Class<?> targetType) {
-        if (targetType == Byte.class || targetType == byte.class) {
-            return Byte.valueOf(value);
-        } else if (targetType == Short.class || targetType == short.class) {
-            return Short.valueOf(value);
-        } else if (targetType == Integer.class || targetType == int.class) {
-            return Integer.parseInt(value);
-        } else if (targetType == Long.class || targetType == long.class) {
-            return Long.valueOf(value);
-        } else if (targetType == Float.class || targetType == float.class) {
-            return Float.valueOf(value);
-        } else if (targetType == Double.class || targetType == double.class) {
-            return Double.valueOf(value);
-        } else if (targetType == Boolean.class || targetType == boolean.class) {
-            return Boolean.valueOf(value);
-        } else if (targetType == Character.class || targetType == char.class) {
-            return value.charAt(0);
-        } else if (targetType == String.class) {
-            return value;
-        } else {
-            throw new IllegalArgumentException("Unsupported target type: " + targetType);
+    private static Object convertValueBasedOnType(JsonNode value) {
+        if (value.isNumber()) {
+            return switch (value.numberType()) {
+                case INT -> value.intValue();
+                case LONG -> value.longValue();
+                case FLOAT -> value.floatValue();
+                case DOUBLE -> value.doubleValue();
+                default -> throw new IllegalArgumentException("Unsupported target type: " + value.numberType());
+            };
+        } else if (value.isTextual()) {
+            return value.textValue();
+        } else if (value.isBoolean()) {
+            return value.booleanValue();
+        } else if (value.isNull()) {
+            return null;
+        } else
+            throw new IllegalArgumentException("Unsupported target type: " + value.numberType());
+    }
+
+    private static Class<?> getDataTypeClass(JsonNode value) {
+        JsonNode conditionValue = value;
+        boolean isArray = conditionValue.isArray();
+        if (isArray) {
+            conditionValue = value.get(0);
         }
+        if (conditionValue.isNumber()) {
+            return switch (conditionValue.numberType()) {
+                case INT -> isArray ? Integer[].class : Integer.class;
+                case LONG -> isArray ? Long[].class : Long.class;
+                case FLOAT -> isArray ? Float[].class : Float.class;
+                case DOUBLE -> isArray ? Double[].class : Double.class;
+                default -> throw new IllegalArgumentException("Unsupported target type: " + value.numberType());
+            };
+        } else if (conditionValue.isTextual()) {
+            return isArray ? String[].class : String.class;
+        } else if (conditionValue.isBoolean()) {
+            return isArray ? Boolean[].class : Boolean.class;
+        } else
+            throw new IllegalArgumentException("Unsupported target type: " + value.numberType());
     }
 }

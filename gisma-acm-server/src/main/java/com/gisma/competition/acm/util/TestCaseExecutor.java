@@ -87,7 +87,7 @@ public class TestCaseExecutor {
             }
 
             if (expectedOutputTestCase != null) {
-                boolean isArray = expectedOutputTestCase.isArray();
+                boolean isArray = expectedOutputTestCase.getJsonValue().isArray();
                 String stringOutput;
                 String stringResult;
 

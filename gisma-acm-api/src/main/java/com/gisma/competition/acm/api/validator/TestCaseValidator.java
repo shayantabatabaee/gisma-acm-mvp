@@ -1,6 +1,7 @@
 package com.gisma.competition.acm.api.validator;
 
-import com.gisma.competition.acm.api.dto.ArgumentDto;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.gisma.competition.acm.api.dto.TestCaseDto;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -28,14 +29,14 @@ public class TestCaseValidator implements ConstraintValidator<TestCaseValidation
         if (argumentsCount == 0) {
             if (values.size() > 1) {
                 context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate("Null test case detected, " +
-                                "Only one null test case is allowed.")
+                context.buildConstraintViolationWithTemplate("Null test case detected i.e. method has no input and output is void, " +
+                                "Only one null test case is allowed. Others are duplicates")
                         .addConstraintViolation();
             }
             return values.size() == 1;
         }
 
-        List<List<ArgumentDto>> arguments = new ArrayList<>(argumentsCount);
+        List<List<JsonNode>> arguments = new ArrayList<>(argumentsCount);
 
         for (int i = 0; i < argumentsCount; i++) {
             arguments.add(new ArrayList<>());
@@ -47,7 +48,7 @@ public class TestCaseValidator implements ConstraintValidator<TestCaseValidation
 
             if (currentInputCount != inputCount) {
                 context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate(String.format("testCase[%d] inputs size incorrect.", i))
+                context.buildConstraintViolationWithTemplate(String.format("testCase[%d] input count is incorrect.", i))
                         .addConstraintViolation();
                 return false;
             }
@@ -77,24 +78,30 @@ public class TestCaseValidator implements ConstraintValidator<TestCaseValidation
         return isSameToEachOther(arguments.getLast(), context, false, arguments.size() - 1);
     }
 
-    private boolean isSameToEachOther(List<ArgumentDto> arguments,
+    private boolean isSameToEachOther(List<JsonNode> arguments,
                                       ConstraintValidatorContext context,
                                       boolean isInput, int index) {
-        boolean isArray = arguments.getFirst().getIsArray();
-        String type = arguments.getFirst().type;
+        boolean isArray = arguments.getFirst().isArray();
 
-        String middle = isInput ? String.format("inputs[%d].", index) : "expectedOutput.";
+        JsonNodeType type;
+        if (isArray) {
+            type = arguments.getFirst().get(0).getNodeType();
+        } else {
+            type = arguments.getFirst().getNodeType();
+        }
+
+        String middle = isInput ? String.format("inputs[%d] ", index) : "expectedOutput.";
 
         for (int i = 1; i < arguments.size(); i++) {
-            if (!arguments.get(i).type.equals(type)) {
-                String message = String.format("testCases[%d].", i) + middle + "type mismatch with others.";
-                context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate(message)
-                        .addConstraintViolation();
-                return false;
+            boolean currentIsArray = arguments.get(i).isArray();
+            JsonNodeType currentType;
+            if (currentIsArray) {
+                currentType = arguments.get(i).get(0).getNodeType();
+            } else {
+                currentType = arguments.get(i).getNodeType();
             }
-            if (arguments.get(i).getIsArray() != isArray) {
-                String message = String.format("testCases[%d].", i) + middle + "isArray mismatch with others.";
+            if (!currentType.equals(type) || currentIsArray != isArray) {
+                String message = String.format("testCases[%d].", i) + middle + "type or value mismatches with first item.";
                 context.disableDefaultConstraintViolation();
                 context.buildConstraintViolationWithTemplate(message)
                         .addConstraintViolation();
