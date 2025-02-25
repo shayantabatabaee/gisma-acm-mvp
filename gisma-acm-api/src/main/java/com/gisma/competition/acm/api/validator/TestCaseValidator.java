@@ -25,6 +25,16 @@ public class TestCaseValidator implements ConstraintValidator<TestCaseValidation
         int inputCount = values.getFirst().getInputs() == null ? 0 : values.getFirst().getInputs().size();
         int argumentsCount = inputCount + (hasOutput ? 1 : 0);
 
+        if (argumentsCount == 0) {
+            if (values.size() > 1) {
+                context.disableDefaultConstraintViolation();
+                context.buildConstraintViolationWithTemplate("Null test case detected, " +
+                                "Only one null test case is allowed.")
+                        .addConstraintViolation();
+            }
+            return values.size() == 1;
+        }
+
         List<List<ArgumentDto>> arguments = new ArrayList<>(argumentsCount);
 
         for (int i = 0; i < argumentsCount; i++) {

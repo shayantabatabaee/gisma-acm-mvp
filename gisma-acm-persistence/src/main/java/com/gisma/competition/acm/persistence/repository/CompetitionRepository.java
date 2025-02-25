@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface CompetitionRepository extends JpaRepository<Competition, Integer> {
     Optional<Competition> getCompetitionByName(String name);
+
+    Optional<Competition> getCompetitionByCompetitionId(Integer competitionId);
 }

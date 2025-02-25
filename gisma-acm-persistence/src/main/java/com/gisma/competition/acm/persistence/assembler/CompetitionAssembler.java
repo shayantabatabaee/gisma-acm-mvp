@@ -17,6 +17,7 @@ public class CompetitionAssembler {
 
     public CreateCompetitionResponseDto toCreateCompetitionResponseDto(Competition competition) {
         CreateCompetitionResponseDto createCompetitionResponseDto = new CreateCompetitionResponseDto();
+        createCompetitionResponseDto.setCompetitionId(competition.getCompetitionId());
         createCompetitionResponseDto.setName(competition.getName());
         createCompetitionResponseDto.setStartTime(competition.getStartTime());
         createCompetitionResponseDto.setEndTime(competition.getStartTime() + competition.getDuration());
@@ -45,28 +46,58 @@ public class CompetitionAssembler {
         int j = 0;
         for (TestCaseDto testCaseDto : testCaseDtos) {
             int i = 0;
-            for (InputDto inputDto : testCaseDto.getInputs()) {
+            if (testCaseDto.getInputs() != null) {
+                for (InputDto inputDto : testCaseDto.getInputs()) {
+                    TestCase testCase = new TestCase();
+                    testCase.setArgumentId(i);
+                    testCase.setArray(inputDto.getIsArray());
+                    testCase.setDataType(DataTypeModel.valueOf(inputDto.getType()));
+                    testCase.setValue(inputDto.getValue());
+                    testCase.setArgumentType(ArgumentTypeModel.INPUT);
+                    testCase.setTestCaseId(j);
+                    testCases.add(testCase);
+                    i++;
+                }
+            }
+            if (testCaseDto.getExpectedOutput() != null) {
                 TestCase testCase = new TestCase();
                 testCase.setArgumentId(i);
-                testCase.setArray(inputDto.getIsArray());
-                testCase.setDataType(DataTypeModel.valueOf(inputDto.getType()));
-                testCase.setValue(inputDto.getValue());
-                testCase.setArgumentType(ArgumentTypeModel.INPUT);
+                testCase.setArray(testCaseDto.getExpectedOutput().getIsArray());
+                testCase.setDataType(DataTypeModel.valueOf(testCaseDto.getExpectedOutput().getType()));
+                testCase.setValue(testCaseDto.getExpectedOutput().getValue());
+                testCase.setArgumentType(ArgumentTypeModel.OUTPUT);
                 testCase.setTestCaseId(j);
                 testCases.add(testCase);
-                i++;
             }
-            TestCase testCase = new TestCase();
-            testCase.setArgumentId(i);
-            testCase.setArray(testCaseDto.getExpectedOutput().getIsArray());
-            testCase.setDataType(DataTypeModel.valueOf(testCaseDto.getExpectedOutput().getType()));
-            testCase.setValue(testCaseDto.getExpectedOutput().getValue());
-            testCase.setArgumentType(ArgumentTypeModel.OUTPUT);
-            testCase.setTestCaseId(j);
-            testCases.add(testCase);
             j++;
         }
         return testCases;
+    }
+
+    public TestCaseDto toTestCaseDto(List<TestCase> inputTestCase, TestCase expectedOutputTestCase) {
+        TestCaseDto testCaseDto = new TestCaseDto();
+
+        if (inputTestCase != null) {
+            List<InputDto> inputDtos = new ArrayList<>();
+            for (TestCase _testCaseDto : inputTestCase) {
+                InputDto inputDto = new InputDto();
+                inputDto.setIsArray(_testCaseDto.isArray());
+                inputDto.setType(_testCaseDto.getDataType().name());
+                inputDto.setValue(_testCaseDto.getValue());
+                inputDtos.add(inputDto);
+            }
+            testCaseDto.setInputs(inputDtos);
+        }
+
+        if (expectedOutputTestCase != null) {
+            OutputDto expectedOutputDto = new OutputDto();
+            expectedOutputDto.setIsArray(expectedOutputTestCase.isArray());
+            expectedOutputDto.setType(expectedOutputTestCase.getDataType().name());
+            expectedOutputDto.setValue(expectedOutputTestCase.getValue());
+            testCaseDto.setExpectedOutput(expectedOutputDto);
+        }
+
+        return testCaseDto;
     }
 
 }

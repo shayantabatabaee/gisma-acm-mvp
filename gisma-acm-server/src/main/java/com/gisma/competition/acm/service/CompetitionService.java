@@ -1,7 +1,9 @@
 package com.gisma.competition.acm.service;
 
 import com.gisma.competition.acm.api.dto.CreateCompetitionRequestDto;
-import com.gisma.competition.acm.api.exception.CompetitionDuplicateException;
+import com.gisma.competition.acm.api.dto.SubmitCompetitionRequestDto;
+import com.gisma.competition.acm.api.dto.SubmitCompetitionResponseDto;
+import com.gisma.competition.acm.api.exception.*;
 import com.gisma.competition.acm.persistence.assembler.CompetitionAssembler;
 import com.gisma.competition.acm.persistence.entity.Competition;
 import com.gisma.competition.acm.persistence.entity.Template;
@@ -9,11 +11,13 @@ import com.gisma.competition.acm.persistence.entity.TestCase;
 import com.gisma.competition.acm.persistence.repository.CompetitionRepository;
 import com.gisma.competition.acm.persistence.repository.TemplateRepository;
 import com.gisma.competition.acm.persistence.repository.TestCaseRepository;
+import com.gisma.competition.acm.util.TestCaseExecutor;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -23,6 +27,7 @@ public class CompetitionService {
     private final CompetitionRepository competitionRepository;
     private final TemplateRepository templateRepository;
     private final TestCaseRepository testCaseRepository;
+    private final TestCaseExecutor testCaseExecutor;
 
     @Transactional
     public Competition createCompetitionWithTemplateAndTestCases(CreateCompetitionRequestDto createCompetitionRequestDto) throws CompetitionDuplicateException {
@@ -41,4 +46,27 @@ public class CompetitionService {
         testCaseRepository.saveAll(testCases);
         return competition;
     }
+
+    public SubmitCompetitionResponseDto submitCompetition(int competitionId, SubmitCompetitionRequestDto submitCompetitionRequestDto)
+            throws CompilationException, CompetitionNotExistException, CompetitionNotStartedException, CompetitionFinishedException {
+        Optional<Competition> competitionOptional = competitionRepository.getCompetitionByCompetitionId(competitionId);
+        if (competitionOptional.isEmpty()) {
+            throw new CompetitionNotExistException(competitionId);
+        }
+
+        Competition competition = competitionOptional.get();
+
+        long currentTime = System.currentTimeMillis();
+        long competitionStartTime = competition.getStartTime();
+        long competitionEndTime = competitionStartTime + competition.getDuration();
+
+        if (currentTime < competitionStartTime) {
+            throw new CompetitionNotStartedException();
+        }
+        if (currentTime > competitionEndTime) {
+            throw new CompetitionFinishedException();
+        }
+        return testCaseExecutor.execute(competition, submitCompetitionRequestDto.getCode());
+    }
+
 }

@@ -2,7 +2,9 @@ package com.gisma.competition.acm.controller;
 
 import com.gisma.competition.acm.api.dto.CreateCompetitionRequestDto;
 import com.gisma.competition.acm.api.dto.CreateCompetitionResponseDto;
-import com.gisma.competition.acm.api.exception.CompetitionDuplicateException;
+import com.gisma.competition.acm.api.dto.SubmitCompetitionRequestDto;
+import com.gisma.competition.acm.api.dto.SubmitCompetitionResponseDto;
+import com.gisma.competition.acm.api.exception.*;
 import com.gisma.competition.acm.api.facade.CompetitionFacade;
 import com.gisma.competition.acm.persistence.assembler.CompetitionAssembler;
 import com.gisma.competition.acm.persistence.entity.Competition;
@@ -23,8 +25,16 @@ public class CompetitionController implements CompetitionFacade {
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CreateCompetitionResponseDto> create(CreateCompetitionRequestDto createCompetitionRequestDto) throws CompetitionDuplicateException {
+    public ResponseEntity<CreateCompetitionResponseDto> create(CreateCompetitionRequestDto createCompetitionRequestDto)
+            throws CompetitionDuplicateException {
         Competition competition = competitionService.createCompetitionWithTemplateAndTestCases(createCompetitionRequestDto);
         return ResponseEntity.status(201).body(competitionAssembler.toCreateCompetitionResponseDto(competition));
+    }
+
+    @Override
+    @PreAuthorize("hasRole('STANDARD')")
+    public ResponseEntity<SubmitCompetitionResponseDto> submit(int competitionId, SubmitCompetitionRequestDto submitCompetitionRequestDto)
+            throws CompilationException, CompetitionNotExistException, CompetitionFinishedException, CompetitionNotStartedException {
+        return ResponseEntity.ok(competitionService.submitCompetition(competitionId, submitCompetitionRequestDto));
     }
 }

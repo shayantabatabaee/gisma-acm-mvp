@@ -4,6 +4,7 @@ import com.gisma.competition.acm.persistence.enumeration.ArgumentTypeModel;
 import com.gisma.competition.acm.persistence.enumeration.DataTypeModel;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 @Entity
@@ -20,6 +21,7 @@ public class TestCase {
     private Integer argumentId;
 
     @ManyToOne
+    @ToString.Exclude
     @JoinColumn(name = "competition_id", nullable = false)
     private Competition competition;
 
