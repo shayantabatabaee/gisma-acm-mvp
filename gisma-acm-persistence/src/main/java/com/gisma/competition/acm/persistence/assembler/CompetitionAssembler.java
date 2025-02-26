@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class CompetitionAssembler {
@@ -121,6 +122,37 @@ public class CompetitionAssembler {
         }
 
         return testCaseDto;
+    }
+
+    public List<TestCaseDto> toTestCaseDtoList(List<TestCase> testCases) {
+        Map<ArgumentTypeModel, Map<Integer, List<TestCase>>> groupedTestCases =
+                testCases.stream()
+                        .collect(Collectors.groupingBy(
+                                TestCase::getArgumentType,
+                                Collectors.groupingBy(TestCase::getTestCaseId)
+                        ));
+        List<TestCaseDto> testCaseDtoList = new ArrayList<>();
+
+        int iteration = 0;
+        if (groupedTestCases.containsKey(ArgumentTypeModel.INPUT))
+            iteration = groupedTestCases.get(ArgumentTypeModel.INPUT).size();
+        else if (groupedTestCases.containsKey(ArgumentTypeModel.OUTPUT))
+            iteration = groupedTestCases.get(ArgumentTypeModel.OUTPUT).size();
+
+        for (int i = 0; i < iteration; i++) {
+            List<TestCase> inputTestcases = null;
+            TestCase expectedOutputTestCase = null;
+            if (groupedTestCases.containsKey(ArgumentTypeModel.INPUT)) {
+                inputTestcases = groupedTestCases.get(ArgumentTypeModel.INPUT).get(i);
+            }
+            if (groupedTestCases.containsKey(ArgumentTypeModel.OUTPUT)) {
+                expectedOutputTestCase = groupedTestCases.get(ArgumentTypeModel.OUTPUT).get(i).getFirst();
+            }
+            TestCaseDto testCaseDto = toTestCaseDto(inputTestcases, expectedOutputTestCase);
+            testCaseDtoList.add(testCaseDto);
+        }
+
+        return testCaseDtoList;
     }
 
 }

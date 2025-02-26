@@ -48,4 +48,10 @@ public class CompetitionController implements CompetitionFacade {
     public ResponseEntity<List<CompetitionInfoDto>> allCompetitions() throws ValidationException, JwtTokenExpiredException, JwtTokenException {
         return ResponseEntity.ok(competitionService.getAllCompetitionInfo());
     }
+
+    @Override
+    @PreAuthorize("hasRole('STANDARD')")
+    public ResponseEntity<List<TestCaseDto>> competitionTestCases(int competitionId) throws ValidationException, JwtTokenExpiredException, JwtTokenException, CompetitionNotExistException {
+        return ResponseEntity.ok(competitionService.getAllTestCases(competitionId));
+    }
 }

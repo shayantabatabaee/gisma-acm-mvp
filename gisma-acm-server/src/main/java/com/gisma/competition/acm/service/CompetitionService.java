@@ -82,4 +82,13 @@ public class CompetitionService {
         return competitionAssembler.toCompetitionInfoDtoList(competitionOptional);
     }
 
+    public List<TestCaseDto> getAllTestCases(int competitionId) throws CompetitionNotExistException {
+        List<TestCase> testCases = testCaseRepository.findByCompetition_CompetitionId(competitionId);
+        if (testCases.isEmpty()) {
+            throw new CompetitionNotExistException(competitionId);
+        }
+
+        return competitionAssembler.toTestCaseDtoList(testCases);
+    }
+
 }
