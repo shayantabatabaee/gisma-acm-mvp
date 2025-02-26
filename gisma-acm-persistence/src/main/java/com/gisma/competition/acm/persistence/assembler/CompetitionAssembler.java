@@ -24,12 +24,25 @@ public class CompetitionAssembler {
         CompetitionInfoResponseDto competitionInfoResponseDto = new CompetitionInfoResponseDto();
         competitionInfoResponseDto.setCompetitionId(competition.getCompetitionId());
         competitionInfoResponseDto.setIsFinished(System.currentTimeMillis() > (competition.getStartTime() + competition.getDuration()));
-        competitionInfoResponseDto.setName(competition.getName());
-        competitionInfoResponseDto.setDescription(competition.getDescription());
-        competitionInfoResponseDto.setStartTime(competition.getStartTime());
-        competitionInfoResponseDto.setDuration(competition.getDuration());
-        competitionInfoResponseDto.setLevel(competition.getLevel().name());
+        BaseCompetitionDto baseCompetitionDto = new BaseCompetitionDto();
+        baseCompetitionDto.setName(competition.getName());
+        baseCompetitionDto.setDescription(competition.getDescription());
+        baseCompetitionDto.setStartTime(competition.getStartTime());
+        baseCompetitionDto.setDuration(competition.getDuration());
+        baseCompetitionDto.setLevel(competition.getLevel().name());
+        competitionInfoResponseDto.setCompetition(baseCompetitionDto);
         return competitionInfoResponseDto;
+    }
+
+    public List<CompetitionInfoDto> toCompetitionInfoDtoList(List<Competition> competitions) {
+        List<CompetitionInfoDto> competitionInfoDtoList = new ArrayList<>();
+        for (Competition competition : competitions) {
+            CompetitionInfoDto competitionInfoDto = new CompetitionInfoDto();
+            competitionInfoDto.setCompetitionId(competition.getCompetitionId());
+            competitionInfoDto.setIsFinished(System.currentTimeMillis() > (competition.getStartTime() + competition.getDuration()));
+            competitionInfoDtoList.add(competitionInfoDto);
+        }
+        return competitionInfoDtoList;
     }
 
     public CreateCompetitionResponseDto toCreateCompetitionResponseDto(Competition competition) {

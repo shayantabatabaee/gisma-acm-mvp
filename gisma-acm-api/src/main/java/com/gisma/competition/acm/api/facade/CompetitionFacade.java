@@ -8,6 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 public interface CompetitionFacade {
     String BASE_URL = "/api/competition";
 
@@ -35,5 +37,11 @@ public interface CompetitionFacade {
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<CompetitionInfoResponseDto> competitionInfo(@PathVariable("id") int competitionId)
             throws ValidationException, JwtTokenExpiredException, JwtTokenException, CompetitionNotExistException;
+
+    @GetMapping(value = "/all",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<List<CompetitionInfoDto>> allCompetitions()
+            throws ValidationException, JwtTokenExpiredException, JwtTokenException;
 
 }

@@ -1,9 +1,6 @@
 package com.gisma.competition.acm.service;
 
-import com.gisma.competition.acm.api.dto.CompetitionInfoResponseDto;
-import com.gisma.competition.acm.api.dto.CreateCompetitionRequestDto;
-import com.gisma.competition.acm.api.dto.SubmitCompetitionRequestDto;
-import com.gisma.competition.acm.api.dto.SubmitCompetitionResponseDto;
+import com.gisma.competition.acm.api.dto.*;
 import com.gisma.competition.acm.api.exception.*;
 import com.gisma.competition.acm.persistence.assembler.CompetitionAssembler;
 import com.gisma.competition.acm.persistence.entity.Competition;
@@ -78,6 +75,11 @@ public class CompetitionService {
         Competition competition = competitionOptional.get();
 
         return competitionAssembler.toCompetitionInfoResponseDto(competition);
+    }
+
+    public List<CompetitionInfoDto> getAllCompetitionInfo() {
+        List<Competition> competitionOptional = competitionRepository.findAll();
+        return competitionAssembler.toCompetitionInfoDtoList(competitionOptional);
     }
 
 }

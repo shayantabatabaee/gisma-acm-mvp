@@ -5,8 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class CompetitionInfoResponseDto extends BaseCompetitionDto {
+public class CompetitionInfoResponseDto extends CompetitionInfoDto {
 
-    private Integer competitionId;
-    private Boolean isFinished;
+    private BaseCompetitionDto competition;
 }

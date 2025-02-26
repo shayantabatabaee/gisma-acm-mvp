@@ -12,6 +12,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(CompetitionFacade.BASE_URL)
 @AllArgsConstructor
@@ -39,5 +41,11 @@ public class CompetitionController implements CompetitionFacade {
     @PreAuthorize("hasRole('STANDARD')")
     public ResponseEntity<CompetitionInfoResponseDto> competitionInfo(int competitionId) throws ValidationException, JwtTokenExpiredException, JwtTokenException, CompetitionNotExistException {
         return ResponseEntity.ok(competitionService.getCompetitionInfo(competitionId));
+    }
+
+    @Override
+    @PreAuthorize("hasRole('STANDARD')")
+    public ResponseEntity<List<CompetitionInfoDto>> allCompetitions() throws ValidationException, JwtTokenExpiredException, JwtTokenException {
+        return ResponseEntity.ok(competitionService.getAllCompetitionInfo());
     }
 }
