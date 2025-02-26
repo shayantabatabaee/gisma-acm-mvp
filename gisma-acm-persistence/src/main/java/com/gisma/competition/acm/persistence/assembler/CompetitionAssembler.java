@@ -3,10 +3,7 @@ package com.gisma.competition.acm.persistence.assembler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gisma.competition.acm.api.dto.CreateCompetitionRequestDto;
-import com.gisma.competition.acm.api.dto.CreateCompetitionResponseDto;
-import com.gisma.competition.acm.api.dto.TemplateDto;
-import com.gisma.competition.acm.api.dto.TestCaseDto;
+import com.gisma.competition.acm.api.dto.*;
 import com.gisma.competition.acm.api.exception.ValidationException;
 import com.gisma.competition.acm.persistence.entity.Competition;
 import com.gisma.competition.acm.persistence.entity.Template;
@@ -22,6 +19,18 @@ import java.util.Map;
 
 @Component
 public class CompetitionAssembler {
+
+    public CompetitionInfoResponseDto toCompetitionInfoResponseDto(Competition competition) {
+        CompetitionInfoResponseDto competitionInfoResponseDto = new CompetitionInfoResponseDto();
+        competitionInfoResponseDto.setCompetitionId(competition.getCompetitionId());
+        competitionInfoResponseDto.setIsFinished(System.currentTimeMillis() > (competition.getStartTime() + competition.getDuration()));
+        competitionInfoResponseDto.setName(competition.getName());
+        competitionInfoResponseDto.setDescription(competition.getDescription());
+        competitionInfoResponseDto.setStartTime(competition.getStartTime());
+        competitionInfoResponseDto.setDuration(competition.getDuration());
+        competitionInfoResponseDto.setLevel(competition.getLevel().name());
+        return competitionInfoResponseDto;
+    }
 
     public CreateCompetitionResponseDto toCreateCompetitionResponseDto(Competition competition) {
         CreateCompetitionResponseDto createCompetitionResponseDto = new CreateCompetitionResponseDto();

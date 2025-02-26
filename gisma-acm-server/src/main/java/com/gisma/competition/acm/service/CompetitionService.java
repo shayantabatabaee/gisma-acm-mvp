@@ -1,5 +1,6 @@
 package com.gisma.competition.acm.service;
 
+import com.gisma.competition.acm.api.dto.CompetitionInfoResponseDto;
 import com.gisma.competition.acm.api.dto.CreateCompetitionRequestDto;
 import com.gisma.competition.acm.api.dto.SubmitCompetitionRequestDto;
 import com.gisma.competition.acm.api.dto.SubmitCompetitionResponseDto;
@@ -67,6 +68,16 @@ public class CompetitionService {
             throw new CompetitionFinishedException();
         }
         return testCaseExecutor.execute(competition, submitCompetitionRequestDto.getCode());
+    }
+
+    public CompetitionInfoResponseDto getCompetitionInfo(int competitionId) throws CompetitionNotExistException {
+        Optional<Competition> competitionOptional = competitionRepository.getCompetitionByCompetitionId(competitionId);
+        if (competitionOptional.isEmpty()) {
+            throw new CompetitionNotExistException(competitionId);
+        }
+        Competition competition = competitionOptional.get();
+
+        return competitionAssembler.toCompetitionInfoResponseDto(competition);
     }
 
 }

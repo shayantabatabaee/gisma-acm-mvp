@@ -1,9 +1,6 @@
 package com.gisma.competition.acm.controller;
 
-import com.gisma.competition.acm.api.dto.CreateCompetitionRequestDto;
-import com.gisma.competition.acm.api.dto.CreateCompetitionResponseDto;
-import com.gisma.competition.acm.api.dto.SubmitCompetitionRequestDto;
-import com.gisma.competition.acm.api.dto.SubmitCompetitionResponseDto;
+import com.gisma.competition.acm.api.dto.*;
 import com.gisma.competition.acm.api.exception.*;
 import com.gisma.competition.acm.api.facade.CompetitionFacade;
 import com.gisma.competition.acm.persistence.assembler.CompetitionAssembler;
@@ -36,5 +33,11 @@ public class CompetitionController implements CompetitionFacade {
     public ResponseEntity<SubmitCompetitionResponseDto> submit(int competitionId, SubmitCompetitionRequestDto submitCompetitionRequestDto)
             throws CompilationException, CompetitionNotExistException, CompetitionFinishedException, CompetitionNotStartedException {
         return ResponseEntity.ok(competitionService.submitCompetition(competitionId, submitCompetitionRequestDto));
+    }
+
+    @Override
+    @PreAuthorize("hasRole('STANDARD')")
+    public ResponseEntity<CompetitionInfoResponseDto> competitionInfo(int competitionId) throws ValidationException, JwtTokenExpiredException, JwtTokenException, CompetitionNotExistException {
+        return ResponseEntity.ok(competitionService.getCompetitionInfo(competitionId));
     }
 }

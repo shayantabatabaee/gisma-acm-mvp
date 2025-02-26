@@ -1,18 +1,12 @@
 package com.gisma.competition.acm.api.facade;
 
-import com.gisma.competition.acm.api.dto.CreateCompetitionRequestDto;
-import com.gisma.competition.acm.api.dto.CreateCompetitionResponseDto;
-import com.gisma.competition.acm.api.dto.SubmitCompetitionRequestDto;
-import com.gisma.competition.acm.api.dto.SubmitCompetitionResponseDto;
+import com.gisma.competition.acm.api.dto.*;
 import com.gisma.competition.acm.api.exception.*;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 public interface CompetitionFacade {
     String BASE_URL = "/api/competition";
@@ -34,5 +28,12 @@ public interface CompetitionFacade {
                                                         @Valid @RequestBody SubmitCompetitionRequestDto submitCompetitionRequestDto)
             throws ValidationException, JwtTokenExpiredException, JwtTokenException,
             CompilationException, CompetitionNotExistException, CompetitionFinishedException, CompetitionNotStartedException;
+
+
+    @GetMapping(value = "/{id}/info",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<CompetitionInfoResponseDto> competitionInfo(@PathVariable("id") int competitionId)
+            throws ValidationException, JwtTokenExpiredException, JwtTokenException, CompetitionNotExistException;
 
 }

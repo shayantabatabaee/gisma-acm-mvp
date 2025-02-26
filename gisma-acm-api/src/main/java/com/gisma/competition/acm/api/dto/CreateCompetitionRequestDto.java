@@ -1,36 +1,17 @@
 package com.gisma.competition.acm.api.dto;
 
-import com.gisma.competition.acm.api.dto.enumeration.CompetitionLevel;
 import com.gisma.competition.acm.api.validator.TestCaseValidation;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
-import lombok.AccessLevel;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.Getter;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class CreateCompetitionRequestDto {
-
-    @NotBlank(message = "Name cannot be empty.")
-    private String name;
-
-    @Getter(AccessLevel.NONE)
-    @NotNull(message = "Level must not be null.")
-    @Pattern(regexp = "EASY|MEDIUM|HARD", message = "Invalid level, accepted values are:EASY, MEDIUM, HARD")
-    private String level;
-
-    @NotNull(message = "Start time must not be null.")
-    @Positive(message = "Start time must be positive.")
-    private Long startTime;
-
-    @NotNull(message = "Duration must not be null.")
-    @Positive(message = "Duration must be positive.")
-    private Long duration;
-
-    @NotBlank(message = "Description cannot be empty.")
-    private String description;
+public class CreateCompetitionRequestDto extends BaseCompetitionDto {
 
     @NotNull(message = "Template must not be null.")
     @Valid
@@ -42,7 +23,4 @@ public class CreateCompetitionRequestDto {
     @TestCaseValidation
     private List<TestCaseDto> testCases;
 
-    public CompetitionLevel getLevel() {
-        return CompetitionLevel.valueOf(level);
-    }
 }
