@@ -9,13 +9,16 @@ import com.gisma.competition.acm.persistence.entity.Competition;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.concurrent.*;
 
 @Component
 public class TestCaseExecutorProcessManager {
 
-    public static final String EXECUTOR_JAR_PATH = "gisma-acm-server/libs/gisma-acm-executor.jar";
+    public static final String EXECUTOR_JAR_PATH = getExecutorJarPath();
     private final ThreadPoolExecutor executorService;
     private final Integer timeout;
 
@@ -76,8 +79,28 @@ public class TestCaseExecutorProcessManager {
         if (exitCode == 0) {
             return objectMapper.readValue(process.getInputStream(), SubmitCompetitionResponseDto.class);
         } else {
-            throw objectMapper.readValue(process.getInputStream(), CompilationException.class);
+            if (process.getInputStream().available() > 0)
+                throw objectMapper.readValue(process.getInputStream(), CompilationException.class);
+            else
+                throw new RuntimeException(readError(process));
         }
     }
 
+    private static String readError(Process process) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+        StringBuilder error = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            error.append(line).append("\n");
+        }
+        return error.toString();
+    }
+
+    private static String getExecutorJarPath() {
+        String localPath = "gisma-acm-server/libs/gisma-acm-executor.jar";
+        String dockerPath = "/app/libs/gisma-acm-executor.jar";
+
+        File localFile = new File(localPath);
+        return localFile.exists() ? localPath : dockerPath;
+    }
 }

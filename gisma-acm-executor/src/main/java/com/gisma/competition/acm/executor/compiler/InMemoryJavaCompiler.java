@@ -1,14 +1,12 @@
 package com.gisma.competition.acm.executor.compiler;
 
 import com.gisma.competition.acm.api.exception.CompilationException;
-import org.springframework.stereotype.Component;
 
 import javax.tools.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
 public class InMemoryJavaCompiler {
 
     private final JavaCompiler compiler;

@@ -1,7 +1,5 @@
 package com.gisma.competition.acm.executor.compiler;
 
-import lombok.Getter;
-
 import javax.tools.*;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -9,7 +7,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
+
 public class InMemoryFileManager extends ForwardingJavaFileManager<JavaFileManager> {
 
     private final Map<String, ByteArrayOutputStream> classBytes = new HashMap<>();
