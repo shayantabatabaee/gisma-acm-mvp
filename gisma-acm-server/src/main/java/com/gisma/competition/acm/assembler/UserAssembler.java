@@ -1,4 +1,4 @@
-package com.gisma.competition.acm.persistence.assembler;
+package com.gisma.competition.acm.assembler;
 
 import com.gisma.competition.acm.api.dto.LoginResponseDto;
 import com.gisma.competition.acm.api.dto.enumeration.UserRole;

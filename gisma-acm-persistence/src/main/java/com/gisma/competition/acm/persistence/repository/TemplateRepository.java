@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TemplateRepository extends JpaRepository<Template, Integer> {
 
+    Template findByCompetition_CompetitionId(Integer competitionCompetitionId);
 }

@@ -6,7 +6,7 @@ import com.gisma.competition.acm.api.dto.SignupRequestDto;
 import com.gisma.competition.acm.api.exception.BadCredentialException;
 import com.gisma.competition.acm.api.exception.UserDuplicateException;
 import com.gisma.competition.acm.api.facade.AuthenticationFacade;
-import com.gisma.competition.acm.persistence.assembler.UserAssembler;
+import com.gisma.competition.acm.assembler.UserAssembler;
 import com.gisma.competition.acm.persistence.entity.User;
 import com.gisma.competition.acm.service.UserService;
 import com.gisma.competition.acm.util.JwtUtil;

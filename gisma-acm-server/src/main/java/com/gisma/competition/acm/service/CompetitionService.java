@@ -2,7 +2,7 @@ package com.gisma.competition.acm.service;
 
 import com.gisma.competition.acm.api.dto.*;
 import com.gisma.competition.acm.api.exception.*;
-import com.gisma.competition.acm.persistence.assembler.CompetitionAssembler;
+import com.gisma.competition.acm.assembler.CompetitionAssembler;
 import com.gisma.competition.acm.persistence.entity.Competition;
 import com.gisma.competition.acm.persistence.entity.Template;
 import com.gisma.competition.acm.persistence.entity.TestCase;
@@ -28,7 +28,7 @@ public class CompetitionService {
     private final TestCaseExecutor testCaseExecutor;
 
     @Transactional
-    public Competition createCompetitionWithTemplateAndTestCases(CreateCompetitionRequestDto createCompetitionRequestDto) throws CompetitionDuplicateException {
+    public CreateCompetitionResponseDto createCompetitionWithTemplateAndTestCases(CreateCompetitionRequestDto createCompetitionRequestDto) throws CompetitionDuplicateException {
         if (competitionRepository.getCompetitionByName(createCompetitionRequestDto.getName()).isPresent()) {
             throw new CompetitionDuplicateException();
         }
@@ -42,7 +42,7 @@ public class CompetitionService {
         List<TestCase> testCases = competitionAssembler.toTestCasesModel(createCompetitionRequestDto.getTestCases());
         testCases.forEach(testCase -> testCase.setCompetition(competition));
         testCaseRepository.saveAll(testCases);
-        return competition;
+        return competitionAssembler.toCreateCompetitionResponseDto(competition);
     }
 
     public SubmitCompetitionResponseDto submitCompetition(int competitionId, SubmitCompetitionRequestDto submitCompetitionRequestDto)
@@ -73,7 +73,6 @@ public class CompetitionService {
             throw new CompetitionNotExistException(competitionId);
         }
         Competition competition = competitionOptional.get();
-
         return competitionAssembler.toCompetitionInfoResponseDto(competition);
     }
 
@@ -87,8 +86,15 @@ public class CompetitionService {
         if (testCases.isEmpty()) {
             throw new CompetitionNotExistException(competitionId);
         }
-
         return competitionAssembler.toTestCaseDtoList(testCases);
     }
 
+    public CompetitionTemplateResponseDto getCompetitionTemplate(int competitionId) throws CompetitionNotExistException {
+        Template template = templateRepository.findByCompetition_CompetitionId(competitionId);
+        if (template == null) {
+            throw new CompetitionNotExistException(competitionId);
+        }
+        List<TestCase> testCases = testCaseRepository.findByCompetition_CompetitionId(competitionId);
+        return competitionAssembler.toCompetitionTemplateResponseDto(template, testCases);
+    }
 }

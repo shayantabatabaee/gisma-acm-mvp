@@ -3,8 +3,6 @@ package com.gisma.competition.acm.controller;
 import com.gisma.competition.acm.api.dto.*;
 import com.gisma.competition.acm.api.exception.*;
 import com.gisma.competition.acm.api.facade.CompetitionFacade;
-import com.gisma.competition.acm.persistence.assembler.CompetitionAssembler;
-import com.gisma.competition.acm.persistence.entity.Competition;
 import com.gisma.competition.acm.service.CompetitionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,14 +18,12 @@ import java.util.List;
 public class CompetitionController implements CompetitionFacade {
 
     private final CompetitionService competitionService;
-    private final CompetitionAssembler competitionAssembler;
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CreateCompetitionResponseDto> create(CreateCompetitionRequestDto createCompetitionRequestDto)
             throws CompetitionDuplicateException {
-        Competition competition = competitionService.createCompetitionWithTemplateAndTestCases(createCompetitionRequestDto);
-        return ResponseEntity.status(201).body(competitionAssembler.toCreateCompetitionResponseDto(competition));
+        return ResponseEntity.status(201).body(competitionService.createCompetitionWithTemplateAndTestCases(createCompetitionRequestDto));
     }
 
     @Override
@@ -53,5 +49,11 @@ public class CompetitionController implements CompetitionFacade {
     @PreAuthorize("hasRole('STANDARD')")
     public ResponseEntity<List<TestCaseDto>> competitionTestCases(int competitionId) throws ValidationException, JwtTokenExpiredException, JwtTokenException, CompetitionNotExistException {
         return ResponseEntity.ok(competitionService.getAllTestCases(competitionId));
+    }
+
+    @Override
+    @PreAuthorize("hasRole('STANDARD')")
+    public ResponseEntity<CompetitionTemplateResponseDto> competitionTemplate(int competitionId) throws ValidationException, JwtTokenExpiredException, JwtTokenException, CompetitionNotExistException {
+        return ResponseEntity.ok(competitionService.getCompetitionTemplate(competitionId));
     }
 }

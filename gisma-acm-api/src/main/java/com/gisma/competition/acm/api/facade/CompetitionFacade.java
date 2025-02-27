@@ -50,4 +50,10 @@ public interface CompetitionFacade {
     ResponseEntity<List<TestCaseDto>> competitionTestCases(@PathVariable("id") int competitionId)
             throws ValidationException, JwtTokenExpiredException, JwtTokenException, CompetitionNotExistException;
 
+    @GetMapping(value = "/{id}/template",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<CompetitionTemplateResponseDto> competitionTemplate(@PathVariable("id") int competitionId)
+            throws ValidationException, JwtTokenExpiredException, JwtTokenException, CompetitionNotExistException;
+
 }

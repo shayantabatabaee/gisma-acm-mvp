@@ -3,7 +3,7 @@ package com.gisma.competition.acm.util;
 import com.gisma.competition.acm.api.dto.SubmitCompetitionResponseDto;
 import com.gisma.competition.acm.api.dto.TestCaseDto;
 import com.gisma.competition.acm.api.exception.CompilationException;
-import com.gisma.competition.acm.persistence.assembler.CompetitionAssembler;
+import com.gisma.competition.acm.assembler.CompetitionAssembler;
 import com.gisma.competition.acm.persistence.entity.Competition;
 import com.gisma.competition.acm.persistence.entity.TestCase;
 import com.gisma.competition.acm.persistence.enumeration.ArgumentTypeModel;
