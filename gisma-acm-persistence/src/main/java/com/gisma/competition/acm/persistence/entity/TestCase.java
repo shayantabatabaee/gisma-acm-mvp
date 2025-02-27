@@ -1,5 +1,6 @@
 package com.gisma.competition.acm.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +26,7 @@ public class TestCase {
 
     @ManyToOne
     @ToString.Exclude
+    @JsonIgnore
     @JoinColumn(name = "competition_id", nullable = false)
     private Competition competition;
 
@@ -34,6 +36,7 @@ public class TestCase {
     @Column(nullable = false)
     private ArgumentTypeModel argumentType;
 
+    @JsonIgnore
     public JsonNode getJsonValue() {
         try {
             ObjectMapper mapper = new ObjectMapper();

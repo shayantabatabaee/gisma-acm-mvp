@@ -1,5 +1,6 @@
 package com.gisma.competition.acm.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
@@ -14,6 +15,7 @@ public class Template {
 
     @OneToOne
     @ToString.Exclude
+    @JsonIgnore
     @JoinColumn(name = "competition_id", unique = true, nullable = false)
     private Competition competition;
 

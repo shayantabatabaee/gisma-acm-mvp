@@ -3,13 +3,14 @@ package com.gisma.competition.acm.service;
 import com.gisma.competition.acm.api.dto.*;
 import com.gisma.competition.acm.api.exception.*;
 import com.gisma.competition.acm.assembler.CompetitionAssembler;
+import com.gisma.competition.acm.executor.assembler.TestCaseAssembler;
 import com.gisma.competition.acm.persistence.entity.Competition;
 import com.gisma.competition.acm.persistence.entity.Template;
 import com.gisma.competition.acm.persistence.entity.TestCase;
 import com.gisma.competition.acm.persistence.repository.CompetitionRepository;
 import com.gisma.competition.acm.persistence.repository.TemplateRepository;
 import com.gisma.competition.acm.persistence.repository.TestCaseRepository;
-import com.gisma.competition.acm.util.TestCaseExecutor;
+import com.gisma.competition.acm.util.TestCaseExecutorProcessManager;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,10 +23,11 @@ import java.util.Optional;
 public class CompetitionService {
 
     private final CompetitionAssembler competitionAssembler;
+    private final TestCaseAssembler testCaseAssembler;
     private final CompetitionRepository competitionRepository;
     private final TemplateRepository templateRepository;
     private final TestCaseRepository testCaseRepository;
-    private final TestCaseExecutor testCaseExecutor;
+    private final TestCaseExecutorProcessManager testCaseExecutor;
 
     @Transactional
     public CreateCompetitionResponseDto createCompetitionWithTemplateAndTestCases(CreateCompetitionRequestDto createCompetitionRequestDto) throws CompetitionDuplicateException {
@@ -46,7 +48,7 @@ public class CompetitionService {
     }
 
     public SubmitCompetitionResponseDto submitCompetition(int competitionId, SubmitCompetitionRequestDto submitCompetitionRequestDto)
-            throws CompilationException, CompetitionNotExistException, CompetitionNotStartedException, CompetitionFinishedException {
+            throws CompilationException, CompetitionNotExistException, CompetitionNotStartedException, CompetitionFinishedException, CompetitionPoolBusyException, SubmissionExecutionTimeoutException {
         Optional<Competition> competitionOptional = competitionRepository.getCompetitionByCompetitionId(competitionId);
         if (competitionOptional.isEmpty()) {
             throw new CompetitionNotExistException(competitionId);
@@ -86,7 +88,7 @@ public class CompetitionService {
         if (testCases.isEmpty()) {
             throw new CompetitionNotExistException(competitionId);
         }
-        return competitionAssembler.toTestCaseDtoList(testCases);
+        return testCaseAssembler.toTestCaseDtoList(testCases);
     }
 
     public CompetitionTemplateResponseDto getCompetitionTemplate(int competitionId) throws CompetitionNotExistException {

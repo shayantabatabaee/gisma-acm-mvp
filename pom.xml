@@ -25,6 +25,7 @@
         <module>gisma-acm-server</module>
         <module>gisma-acm-persistence</module>
         <module>gisma-acm-api</module>
+        <module>gisma-acm-executor</module>
     </modules>
 
     <licenses>

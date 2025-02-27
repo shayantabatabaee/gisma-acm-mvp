@@ -29,7 +29,7 @@ public class CompetitionController implements CompetitionFacade {
     @Override
     @PreAuthorize("hasRole('STANDARD')")
     public ResponseEntity<SubmitCompetitionResponseDto> submit(int competitionId, SubmitCompetitionRequestDto submitCompetitionRequestDto)
-            throws CompilationException, CompetitionNotExistException, CompetitionFinishedException, CompetitionNotStartedException {
+            throws CompilationException, CompetitionNotExistException, CompetitionFinishedException, CompetitionNotStartedException, CompetitionPoolBusyException, SubmissionExecutionTimeoutException {
         return ResponseEntity.ok(competitionService.submitCompetition(competitionId, submitCompetitionRequestDto));
     }
 

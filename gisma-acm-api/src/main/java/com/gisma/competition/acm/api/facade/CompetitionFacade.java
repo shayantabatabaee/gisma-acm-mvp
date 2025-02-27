@@ -29,7 +29,7 @@ public interface CompetitionFacade {
     ResponseEntity<SubmitCompetitionResponseDto> submit(@PathVariable("id") int competitionId,
                                                         @Valid @RequestBody SubmitCompetitionRequestDto submitCompetitionRequestDto)
             throws ValidationException, JwtTokenExpiredException, JwtTokenException,
-            CompilationException, CompetitionNotExistException, CompetitionFinishedException, CompetitionNotStartedException;
+            CompilationException, CompetitionNotExistException, CompetitionFinishedException, CompetitionNotStartedException, CompetitionPoolBusyException, SubmissionExecutionTimeoutException;
 
 
     @GetMapping(value = "/{id}/info",
