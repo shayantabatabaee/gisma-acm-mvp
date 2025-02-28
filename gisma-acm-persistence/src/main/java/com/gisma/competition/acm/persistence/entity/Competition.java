@@ -8,6 +8,10 @@ import java.util.List;
 
 @Entity
 @Data
+@Table(name = "competition",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "unique_competition_name", columnNames = "name")
+        })
 public class Competition {
 
     @Id

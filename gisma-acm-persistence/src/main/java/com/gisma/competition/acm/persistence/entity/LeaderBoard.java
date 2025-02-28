@@ -7,6 +7,15 @@ import lombok.ToString;
 
 @Entity
 @Data
+@Table(name = "leader_board",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uc_leaderboard_competition_id_user_id",
+                        columnNames = {"competition_id", "user_id"})
+        },
+        indexes = {
+                @Index(name = "idx_leaderboard_competition_id", columnList = "competition_id"),
+                @Index(name = "idx_leaderboard_user_id", columnList = "user_id")
+        })
 public class LeaderBoard {
 
     @Id

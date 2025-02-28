@@ -15,6 +15,7 @@ import java.util.Map;
 
 @Data
 @Entity
+@Table(name = "test_case", indexes = {@Index(name = "idx_competition_id", columnList = "competition_id")})
 public class TestCase {
 
     @Id

@@ -7,6 +7,10 @@ import lombok.ToString;
 
 @Entity
 @Data
+@Table(name = "template",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "unique_competition_id", columnNames = "competition_id")
+        })
 public class Template {
 
     @Id
