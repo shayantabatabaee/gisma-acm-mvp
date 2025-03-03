@@ -97,10 +97,14 @@ public class TestCaseExecutorProcessManager {
     }
 
     private static String getExecutorJarPath() {
-        String localPath = "gisma-acm-server/libs/gisma-acm-executor.jar";
+        String localPath = "libs/gisma-acm-executor.jar";
+        String ideaPath = "gisma-acm-server/libs/gisma-acm-executor.jar";
         String dockerPath = "/app/libs/gisma-acm-executor.jar";
 
         File localFile = new File(localPath);
-        return localFile.exists() ? localPath : dockerPath;
+        if (!localFile.exists()) {
+            localFile = new File(ideaPath);
+        }
+        return localFile.exists() ? localFile.getAbsolutePath() : dockerPath;
     }
 }
