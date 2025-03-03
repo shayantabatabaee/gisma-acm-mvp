@@ -39,11 +39,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         String token = extractToken(request);
-        if (token == null) {
-            filterChain.doFilter(request, response);
-            return;
-        }
         try {
+            if (token == null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
             String username = jwtUtil.extractUsername(token);
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

@@ -14,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,5 +70,17 @@ public class RestErrorHandler {
         errorResponseDto.setErrorMessage(ex.getMessage());
         errorResponseDto.setErrorDetails(ex.getDetails());
         return new ResponseEntity<>(errorResponseDto, ex.getStatus());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponseDto> handleUnknownException(Exception ex) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        if (ex instanceof ResponseStatusException) {
+            status = HttpStatus.valueOf(((ResponseStatusException) ex).getStatusCode().value());
+        }
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto();
+        errorResponseDto.setErrorCode(ex.getClass().getSimpleName());
+        errorResponseDto.setErrorMessage(ex.getMessage());
+        return new ResponseEntity<>(errorResponseDto, status);
     }
 }

@@ -13,7 +13,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity
@@ -33,7 +32,7 @@ public class SecurityConfig {
                         anyRequest().authenticated()
                 ).exceptionHandling(exception -> {
                     exception.
-                            authenticationEntryPoint(new BasicAuthenticationEntryPoint()).
+                            authenticationEntryPoint(new ExceptionAuthenticationEntryPoint()).
                             accessDeniedHandler(new AccessDeniedHandlerImpl());
                 })
                 .formLogin(formLogin -> formLogin.loginPage("/login").disable())
