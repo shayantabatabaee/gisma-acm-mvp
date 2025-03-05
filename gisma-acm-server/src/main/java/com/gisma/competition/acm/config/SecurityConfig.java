@@ -28,7 +28,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests -> authorizeRequests.
                         requestMatchers(AuthenticationFacade.BASE_URL + "/**").permitAll().
-                        requestMatchers("/error").permitAll().
+                        requestMatchers("/error").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/favicon.ico").permitAll().
                         anyRequest().authenticated()
                 ).exceptionHandling(exception -> {
                     exception.

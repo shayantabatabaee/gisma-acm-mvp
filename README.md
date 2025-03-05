@@ -57,7 +57,7 @@ All the required services are included in the `docker-compose.yaml` file.
 
 After running the application, the Swagger UI and API documentation can be viewed using the following link:
 
-<a href="http://localhost:8080/swagger-ui">Swagger UI</a>
+<a href="http://localhost:8080/swagger-ui/">Swagger UI</a>
 
 ## License
 
