@@ -6,6 +6,7 @@ import com.gisma.competition.acm.api.facade.CompetitionFacade;
 import com.gisma.competition.acm.persistence.entity.User;
 import com.gisma.competition.acm.service.CompetitionService;
 import com.gisma.competition.acm.service.LeaderBoardService;
+import com.gisma.competition.acm.service.UserCodeService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +24,7 @@ public class CompetitionController implements CompetitionFacade {
 
     private final CompetitionService competitionService;
     private final LeaderBoardService leaderBoardService;
+    private final UserCodeService userCodeService;
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
@@ -39,7 +41,14 @@ public class CompetitionController implements CompetitionFacade {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         int userId = ((User) authentication.getPrincipal()).getUserId();
         SubmitCompetitionResponseDto responseDto = competitionService.submitCompetition(competitionId, submitCompetitionRequestDto);
-        leaderBoardService.saveOrUpdateLeaderBoard(responseDto, userId);
+        long submissionTime = System.currentTimeMillis();
+        leaderBoardService.saveOrUpdateLeaderBoard(responseDto, userId, submissionTime);
+        userCodeService.saveCode(
+                submitCompetitionRequestDto.getCode(),
+                userId,
+                submissionTime,
+                responseDto.getCompetitionId(),
+                responseDto.getCpuTime());
         return ResponseEntity.ok(responseDto);
     }
 

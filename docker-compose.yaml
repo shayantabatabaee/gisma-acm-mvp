@@ -11,6 +11,17 @@ services:
       - "3306:3306"
     networks:
       - app-network
+  mongodb:
+    image: mongo:8.0
+    container_name: mongo_db
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "root"
+      MONGO_INITDB_ROOT_PASSWORD: "root"
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
   server:
     build:
       context: .
@@ -21,6 +32,11 @@ services:
       - MYSQL_URL=mysql://mysql_db:3306/acm_gisma
       - MYSQL_USERNAME=root
       - MYSQL_PASSWORD=root
+      # MongoDB Connection Information
+      - MONGODB_USERNAME=root
+      - MONGODB_PASSWORD=root
+      - MONGODB_HOST=mongo_db:27017
+      - MONGODB_DATABASE=acm_gisma
       # Admin User Data
       - ADMIN_USERNAME=admin
       - ADMIN_PASSWORD=admin
@@ -29,6 +45,7 @@ services:
       - "8080:8080"
     depends_on:
       - mysql
+      - mongodb
     networks:
       - app-network
 

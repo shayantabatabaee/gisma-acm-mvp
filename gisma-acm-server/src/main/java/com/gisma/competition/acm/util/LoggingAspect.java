@@ -68,6 +68,6 @@ public class LoggingAspect {
 
     private String getRequestBody(ProceedingJoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
-        return (args != null && args.length > 0) ? args[0].toString() : "No Body";
+        return (args != null && args.length > 0) ? (args.length > 1 ? args[1].toString() : args[0].toString()) : "No Body";
     }
 }

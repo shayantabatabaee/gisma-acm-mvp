@@ -24,7 +24,7 @@ public class LeaderBoardService {
     private final CompetitionRepository competitionRepository;
     private final LeaderBoardAssembler leaderBoardAssembler;
 
-    public void saveOrUpdateLeaderBoard(SubmitCompetitionResponseDto responseDto, int userId) {
+    public void saveOrUpdateLeaderBoard(SubmitCompetitionResponseDto responseDto, int userId, Long submissionTime) {
         LeaderBoard leaderBoard = leaderBoardRepository.
                 findByCompetition_CompetitionIdAndUser_UserId(responseDto.getCompetitionId(), userId).orElseGet(() -> {
                     LeaderBoard newLeaderBoard = new LeaderBoard();
@@ -33,7 +33,7 @@ public class LeaderBoardService {
                     return newLeaderBoard;
                 });
 
-        leaderBoard.setSubmissionTime(System.currentTimeMillis());
+        leaderBoard.setSubmissionTime(submissionTime);
         leaderBoard.setCpuTime(responseDto.getCpuTime());
         leaderBoard.setSuccess(responseDto.getSuccess());
         leaderBoard.setFailureTestCasesCount(responseDto.getFailureTestCases().size());
