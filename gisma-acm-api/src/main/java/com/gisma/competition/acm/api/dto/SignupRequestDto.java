@@ -1,5 +1,6 @@
 package com.gisma.competition.acm.api.dto;
 
+import com.gisma.competition.acm.api.util.Masker;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -18,4 +19,13 @@ public class SignupRequestDto {
 
     @Email(message = "Email address is not valid.")
     private String email;
+
+    @Override
+    public String toString() {
+        return "SignupRequestDto(" +
+                "username='" + username + '\'' +
+                ", password='" + Masker.fullMask(password) + '\'' +
+                ", email='" + email + '\'' +
+                ')';
+    }
 }
