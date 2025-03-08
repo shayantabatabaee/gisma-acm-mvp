@@ -10,14 +10,15 @@ project of the Advanced Programming course. This is an MVP that allows users to 
 and solve and submit their code. Currently, only the Java programming language is supported, but more languages will be
 added later. The project is written in Java using the Spring Boot framework.
 
-Basically, there are two roles: <i>Admin</i> and <i>Standard</i> users, each with different levels of access. For example, only admins
+Basically, there are two roles: <i>Admin</i> and <i>Standard</i> users, each with different levels of access. For
+example, only admins
 can submit competitions, while users are not allowed to do so.
 
 ## Try out The Application
 
 To run the application make sure <b>Java 21</b> is installed and `JAVA_HOME` environment variable is set
-correctly. Additionally, this application requires a <b>MySQL</b> server and <b>MongoDB</b> to store data. 
-<b>The corresponding tables must be created</b> and pass through the environment variables to the application. 
+correctly. Additionally, this application requires a <b>MySQL</b> server and <b>MongoDB</b> to store data.
+<b>The corresponding tables must be created</b> and pass through the environment variables to the application.
 
 ### 1. Run using Maven Wrapper
 
@@ -52,6 +53,10 @@ docker-compose up
 ```
 
 All the required services are included in the `docker-compose.yaml` file.
+
+## Postman Collection
+
+The default postman collection which contains data and samples for all endpoints is located at <i>docs</i> folder.
 
 ## Swagger
 

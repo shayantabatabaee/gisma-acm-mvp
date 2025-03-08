@@ -1,0 +1,473 @@
+{
+	"info": {
+		"_postman_id": "d1ecdf88-ecf7-4b34-9a25-684c2289144b",
+		"name": "gisma-acm-mvp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5426228"
+	},
+	"item": [
+		{
+			"name": "Signup",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Extract Token\", function () {",
+							"    var token = pm.response.headers.get(\"Authorization\");",
+							"    if (token) {",
+							"        pm.environment.set(\"authToken\", token.replace(\"Bearer \", \"\"));",
+							"     }",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"shayantabatabaee\",\n    \"password\": \"Aa@123456\",\n    \"email\": \"shayan.ta69@gmail.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/auth/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Extract Token\", function () {",
+							"    var token = pm.response.headers.get(\"Authorization\");",
+							"    if (token) {",
+							"        pm.environment.set(\"authToken\", token.replace(\"Bearer \", \"\"));",
+							"     }",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"shayantabatabaee\",\n    \"password\": \"Aa@123456\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateCompetition",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"current_epoch_time\", Date.now());"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Two Sum\",\n    \"level\": \"EASY\",\n    \"startTime\": {{current_epoch_time}},\n    \"duration\": 604800000,\n    \"description\": \"Given an array of integers `nums` and an integer `target`, return indices of the two numbers such that they add up to `target`.</br></br>You may assume that each input would have <b>exactly one solution</b>, and you may not use the same element twice.</br></br>You can return the answer in any order.</br></br><pre></br>Example 1:</br>Input: nums = [2,7,11,15], target = 9</br>Output: [0,1]</br>Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].</br></br>Example 2:</br>Input: nums = [3,2,4], target = 6</br>Output: [1,2]</br></br>Example 3:</br>Input: nums = [3,3], target = 6</br>Output: [0,1]</br></pre>\",\n    \"template\": {\n        \"className\": \"Solution\",\n        \"methodName\": \"twoSum\"\n    },\n    \"testCases\": [\n        {\n            \"inputs\": [[2,7,11,15], 9],\n            \"expectedOutput\": [0,1]\n        },\n        {\n            \"inputs\": [[3, 2, 4], 6],\n            \"expectedOutput\": [1,2]\n        },\n    {\n            \"inputs\": [[3, 3], 6],\n            \"expectedOutput\": [0,1]\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/competition/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"competition",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SubmitCompetition",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"code\": \"import java.util.HashMap;import java.util.Map;public class Solution {public Integer[] twoSum(Integer[] nums, Integer target) {Map<Integer, Integer> numMap = new HashMap<>();for (int i = 0; i < nums.length; i++) {int complement = target - nums[i];if (numMap.containsKey(complement)) {return new Integer[] { numMap.get(complement), i };}numMap.put(nums[i], i);}throw new IllegalArgumentException(\\\"No two sum solution\\\");}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/competition/1/submit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"competition",
+						"1",
+						"submit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SubmitCompetitionCompileFailed",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"code\": \"import java.util.HashMap;import java.util.Map;public class Solution {public Integer[] twoSum(Integer[] nums, Integer target) {Map<Integer, Integer> numMap = new HashMap<>();for (int i = 0; i < nums.length; i++) {int complement = target - nums[i];if (numMap.containsKey(complement)) {return new Integer[] { numMap.get(complement), i };}numMap.put(nums[i], i);}throw new IllegalArgumentException(\\\"No two sum solution\\\")}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/competition/1/submit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"competition",
+						"1",
+						"submit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SubmitCompetitionCpuIntensive",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"code\":\"public class Solution {public Integer[] twoSum(Integer[] nums, Integer target) {long sum = 0;for(long i=0;i<1_000_000_000_0000L;i++){ sum += i % 2;}return null;}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/competition/1/submit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"competition",
+						"1",
+						"submit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CompetitionInfo",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/competition/1/info",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"competition",
+						"1",
+						"info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AllCompetition",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/competition/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"competition",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CompetitionTestCases",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/competition/1/testcases",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"competition",
+						"1",
+						"testcases"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CompetitionTemplate",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/competition/1/template",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"competition",
+						"1",
+						"template"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "LeaderboardWinners",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/leaderboard/winners/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"leaderboard",
+						"winners",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UserSubmissions",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/leaderboard/user-submissions/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"leaderboard",
+						"user-submissions",
+						"2"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
