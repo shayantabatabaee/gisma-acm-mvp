@@ -17,7 +17,7 @@ can submit competitions, while users are not allowed to do so.
 
 To run the application make sure <b>Java 21</b> is installed and `JAVA_HOME` environment variable is set
 correctly. Additionally, this application requires a <b>MySQL</b> server and <b>MongoDB</b> to store data. 
-The corresponding tables should be created and pass through the environment variables to the application. 
+<b>The corresponding tables must be created</b> and pass through the environment variables to the application. 
 
 ### 1. Run using Maven Wrapper
 

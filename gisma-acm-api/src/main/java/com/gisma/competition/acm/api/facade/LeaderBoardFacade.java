@@ -1,10 +1,8 @@
 package com.gisma.competition.acm.api.facade;
 
 import com.gisma.competition.acm.api.dto.SubmissionResponseDto;
-import com.gisma.competition.acm.api.exception.CompetitionNotExistException;
-import com.gisma.competition.acm.api.exception.JwtTokenException;
-import com.gisma.competition.acm.api.exception.JwtTokenExpiredException;
-import com.gisma.competition.acm.api.exception.ValidationException;
+import com.gisma.competition.acm.api.dto.UserSubmissionsResponseDto;
+import com.gisma.competition.acm.api.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,4 +21,12 @@ public interface LeaderBoardFacade {
     ResponseEntity<List<SubmissionResponseDto>> winners(@PathVariable("id") int competitionId) throws ValidationException,
             JwtTokenExpiredException,
             JwtTokenException, CompetitionNotExistException;
+
+
+    @GetMapping(value = "/user-submissions/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<UserSubmissionsResponseDto> getUserSubmissions(@PathVariable("id") int userId) throws ValidationException,
+            JwtTokenExpiredException,
+            JwtTokenException, UserNotAuthorizedException, UserIdNotExistsException;
 }

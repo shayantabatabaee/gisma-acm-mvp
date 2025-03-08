@@ -1,12 +1,11 @@
 package com.gisma.competition.acm.controller;
 
 import com.gisma.competition.acm.api.dto.SubmissionResponseDto;
-import com.gisma.competition.acm.api.exception.CompetitionNotExistException;
-import com.gisma.competition.acm.api.exception.JwtTokenException;
-import com.gisma.competition.acm.api.exception.JwtTokenExpiredException;
-import com.gisma.competition.acm.api.exception.ValidationException;
+import com.gisma.competition.acm.api.dto.UserSubmissionsResponseDto;
+import com.gisma.competition.acm.api.exception.*;
 import com.gisma.competition.acm.api.facade.LeaderBoardFacade;
 import com.gisma.competition.acm.service.LeaderBoardService;
+import com.gisma.competition.acm.service.UserSubmissionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +20,7 @@ import java.util.List;
 public class LeaderBoardController implements LeaderBoardFacade {
 
     private final LeaderBoardService leaderBoardService;
+    private final UserSubmissionService userSubmissionService;
 
     @Override
     @PreAuthorize("hasRole('STANDARD')")
@@ -28,4 +28,11 @@ public class LeaderBoardController implements LeaderBoardFacade {
             JwtTokenExpiredException, JwtTokenException, CompetitionNotExistException {
         return ResponseEntity.ok(leaderBoardService.getSuccessSubmissionSortByCpuTime(competitionId));
     }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserSubmissionsResponseDto> getUserSubmissions(int userId) throws ValidationException, JwtTokenExpiredException, JwtTokenException, UserNotAuthorizedException, UserIdNotExistsException {
+        return ResponseEntity.ok(userSubmissionService.getUserSubmissions(userId));
+    }
+
 }

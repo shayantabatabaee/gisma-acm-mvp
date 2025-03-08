@@ -11,4 +11,6 @@ public interface LeaderBoardRepository extends JpaRepository<LeaderBoard, Intege
     Optional<LeaderBoard> findByCompetition_CompetitionIdAndUser_UserId(Integer competitionCompetitionId, Integer userUserId);
 
     List<LeaderBoard> getLeaderBoardsByCompetition_CompetitionIdAndSuccessTrueOrderByCpuTimeAsc(Integer competitionCompetitionId);
+
+    List<LeaderBoard> getLeaderBoardsByUser_UserId(Integer userUserId);
 }
