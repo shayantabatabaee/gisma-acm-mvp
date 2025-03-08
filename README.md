@@ -35,7 +35,7 @@ Next, you need to build the project. The `gisma-acm-executor` module is an exter
 file and copied automatically during the packaging phase. To build the project, run:
 
 ```bash
-./mvnw clean package
+./mvnw clean install
 ```
 
 Once the project is built, you can start the application by running the following command:
