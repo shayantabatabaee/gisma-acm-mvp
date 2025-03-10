@@ -23,7 +23,6 @@ public class Template {
     @JoinColumn(name = "competition_id", unique = true, nullable = false)
     private Competition competition;
 
-    @Lob
     @Column(nullable = false)
     private String className;
 

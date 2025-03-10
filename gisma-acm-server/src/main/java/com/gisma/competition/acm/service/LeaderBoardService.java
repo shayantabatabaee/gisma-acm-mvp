@@ -9,6 +9,7 @@ import com.gisma.competition.acm.persistence.entity.LeaderBoard;
 import com.gisma.competition.acm.persistence.repository.CompetitionRepository;
 import com.gisma.competition.acm.persistence.repository.LeaderBoardRepository;
 import com.gisma.competition.acm.persistence.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ public class LeaderBoardService {
     private final CompetitionRepository competitionRepository;
     private final LeaderBoardAssembler leaderBoardAssembler;
 
+    @Transactional
     public void saveOrUpdateLeaderBoard(SubmitCompetitionResponseDto responseDto, int userId, Long submissionTime) {
         LeaderBoard leaderBoard = leaderBoardRepository.
                 findByCompetition_CompetitionIdAndUser_UserId(responseDto.getCompetitionId(), userId).orElseGet(() -> {

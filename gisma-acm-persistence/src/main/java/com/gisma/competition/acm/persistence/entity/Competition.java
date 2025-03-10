@@ -21,6 +21,7 @@ public class Competition {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CompetitionLevelModel level;
 
