@@ -58,6 +58,14 @@ All the required services are included in the `docker-compose.yaml` file.
 
 The default postman collection which contains data and samples for all endpoints is located at <i>docs</i> folder.
 
+## Database Query
+
+All related files to SQL and NoSQL database queries are located under
+<a href="https://github.com/shayantabatabaee/gisma-acm-mvp/tree/main/docs/query">docs/query</a> folder.
+Also, the ERD for SQL part is like the following image:
+
+<img src="docs/ERD.png">
+
 ## Swagger
 
 After running the application, the Swagger UI and API documentation can be viewed using the following link:
